@@ -10,7 +10,7 @@ body {
     border: 10px solid darkgray;
     background-color: lightgray;
 
-    margin: 0 auto;
+    margin: auto;
     display: flex;
     flex-wrap: wrap;
 }

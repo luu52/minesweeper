@@ -9,10 +9,10 @@ Feature: MineSweeper
     "n" cell with number
 
 Background:
-Given a user opens the app
+Given a user opens the app                                                                          #DONE
 
 
-Scenario: Default board
+Scenario: Default board                                                                             #DONE
 Then the board should be an "8" x "8"
 
 

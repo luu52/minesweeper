@@ -14,3 +14,7 @@ Then('the board should be an {int} x {int}', async function (int, int2) {
   expect(numberOfDivsInBoard.length).toBe(numberOfDivsShouldBe);
 });
 
+Then('the counter should be set to {string}', async (string) => {
+	const display = await page.locator('data-testid=count').innerText();
+	expect(display).toBe(string);
+});
