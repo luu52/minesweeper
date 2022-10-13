@@ -156,7 +156,7 @@ And the user should lose the game
 
 # Scenario Outline:  Seeting the cells tags with the mouse using right click
 # Given the user marks as "<current-tag-status>" the cell "1-1"
-# When the user right click the cell "1-1"
+# When the user right clicks the cell "1-1"
 # Then the "cell"  "1-1" should be tagged as "<next-tag-statyus>"
 
 # Examples:
