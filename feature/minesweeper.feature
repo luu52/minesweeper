@@ -15,20 +15,15 @@ Scenario: Default board
 Then the board should be an 8 x 8
 
 Scenario: Default time counter                                                            
-Then the counter should be set to "0"
+Then the counter should be set to ""
 
 
 # ---------------------------------------FINISH GAME---------------------------------------
 
 Scenario: If the user reveals a cell that has a mine the game finishes and shows the mine
-Given the user loads the following mockData:
-"""
-ooo
-ooo
-o*o
-"""
-When the user unleash the cell "3-2"
-Then the cell <3-2> shows the "mine symbol"
+Given the user loads the following mockData: "ooo-ooo-o*o"
+When the user unleash the cell "2-1"
+Then the cell "2-1" shows the mine
 And the user should lose the game
 
 

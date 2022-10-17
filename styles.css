@@ -112,4 +112,11 @@ body {
     border: 2px solid #7895B2;
     margin-bottom: 7px;
 }
-   
+
+.minedCellBackgroundColor{
+    background-color: red;
+}
+
+.cell-clicked{
+    background-color: #b7d9fb;
+}
