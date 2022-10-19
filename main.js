@@ -3,8 +3,6 @@ let rows = 8;
 let columns = 8;
 let minesLocation = [];                                                                             // for example = "2-2", "3-4", "2-1"
 let cellsClicked = 0;                                                                               //everytime we click on a cell this goes up
-let flagEnabled = false;                                                                            //whenever we click on the flag, it changes to true or false
-let uncertaintySymbol = false;
 let gameOver = false;                                                                               //disable buttons when game is over
 let flag_counter = 10;
 let number_mines = 10;
@@ -22,7 +20,6 @@ function generateMockData() {
     let urlWithHyphen = url[1].split("-");                                                         //we get the url previously saved and then we get the first position of the array and we split it with -
     columns = urlWithHyphen[0].length;
     rows = urlWithHyphen.length;
-    console.log(columns, rows);
     generateMockDataBoard(columns, rows);
   }
   console.log(board);
@@ -42,16 +39,15 @@ function placeMinesInMockData() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       if (MockData[r].charAt(c) == "*") {
-        minesLocation = r.toString() + "-" + c.toString();
+        minesLocation.push(r.toString() + "-" + c.toString());
       }
     }
   }
+  console.log(minesLocation);
 }
 
 function startGame() {
   document.getElementById("flag-count").innerText = flag_counter;                                           //with this we are saying that the HTML flag-count id equals the flag_counter variable created in the js
-  document.getElementById("flag-button").addEventListener("click", setFlag);
-  document.getElementById("uncertain-button").addEventListener("click", setUncertaintySymbol);
   document.getElementById("reset-game").addEventListener("click", resetGame);
 
   if (window.location.search.includes("?")) {
@@ -66,7 +62,8 @@ function startGame() {
     for (let c = 0; c < columns; c++) {
       let cell = document.createElement("div");
       cell.id = r.toString() + "-" + c.toString();                                                          //ad id's to the divs
-      cell.addEventListener("click", clickcell);                                                            //make the cells clickeable
+      cell.addEventListener("click", (event) => {clickcell(event.target)});                                                            //make the cells clickeable
+      cell.addEventListener("contextmenu", (event) => {event.preventDefault(); tagCell(event.target)}); 
       document.getElementById("board").append(cell);
       cell.setAttribute("data-testid", r + "-" + c);
       row.push(cell);
@@ -90,57 +87,31 @@ function placeRandomMines() {
   console.log(minesLocation);
 }
 
-function setFlag() {                                                                                        //function to change the background color of the flag button depending if we click it or not
-  if (flagEnabled) {
-    flagEnabled = false;
-    document.getElementById("flag-button").style.backgroundColor = "#F5EFE6";
-  } else {
-    flagEnabled = true;
-    document.getElementById("flag-button").style.backgroundColor = "darkgray";
-  }
+function tagCell(cell){
+  console.log(cell);
+    if (cell.innerText == "") {                                                                             //if the clicked cell has nothing, and we click it, we set a flag
+      cell.innerText = "🚩";
+      flag_counter--;
+    } else if (cell.innerText == "🚩") {                                                                    //if the clicked cell has a flag, and we click it, we set it to nothing
+      cell.innerText = "❓";
+      flag_counter++;
+    } else if(cell.innerText == "❓"){
+      cell.innerText = "";
+    } else{
+      cell.innerText = "";
+    }
+    document.getElementById("flag-count").innerText = flag_counter;
 }
 
-function setUncertaintySymbol() {                                                                           //function to change the background color of the uncertainty button depending if we click it or not
-  if (uncertaintySymbol) {
-    uncertaintySymbol = false;
-    document.getElementById("uncertain-button").style.backgroundColor = "#F5EFE6";
-  } else {
-    uncertaintySymbol = true;
-    document.getElementById("uncertain-button").style.backgroundColor = "darkgray";
-  }
-}
-
-function clickcell() {
+function clickcell(cell) {
   if (!counterIsRunning) {
     counterIsRunning = true;
     timeCounter();
   }
 
-  if (gameOver || this.classList.contains("cell-clicked")) {
+  if (gameOver || cell.classList.contains("cell-clicked")) {
     return;
   }
-
-  let cell = this;
-  if (flagEnabled) {
-    if (cell.innerText == "") {                                                                             //if the clicked cell has nothing, and we click it, we set a flag
-      cell.innerText = "🚩";
-      --flag_counter
-    } else if (cell.innerText == "🚩") {                                                                    //if the clicked cell has a flag, and we click it, we set it to nothing
-      cell.innerText = "";
-      ++flag_counter
-    }
-    return;
-  }
-
-  if (uncertaintySymbol) {
-    if (cell.innerText == "🚩") {                                                                           //if the clicked cell has a flag symbol, and we click it, we set a question mark
-      cell.innerText = "❓";
-    } else if (cell.innerText == "❓") {                                                                    //if the clicked cell has a question mark, and we click it, we set it to nothing
-      cell.innerText = "";
-    }
-    return;
-  }
-
   if (minesLocation.includes(cell.id)) {
     gameOver = true;
     revealAllMinesWhenOneIsClicked();
@@ -216,7 +187,6 @@ function checkMine(r, c) {
   if (cellsClicked == rows * columns - number_mines) {
     document.getElementById("mines-count").innerText = "Cleared";
     gameOver = true;
-    window.alert("YOU WON");
   }
 }
 
@@ -230,10 +200,6 @@ function checkcell(r, c) {
   return 0;
 }
 
-function resetGame(){
-
-}
-
 function timeCounter(){
   let seconds = 0;
   interval = window.setInterval(function(){
@@ -242,4 +208,8 @@ function timeCounter(){
       seconds++
     }
   },1000)
+}
+
+function resetGame(){
+  
 }
