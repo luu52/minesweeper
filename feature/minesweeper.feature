@@ -27,16 +27,12 @@ Then the cell "2-1" shows the mine
 And the user should lose the game
 
 
-# Scenario: reveal all the bombs that are in the board when the user loses the game 
-# Given the user loads the following mockData:
-# """
-# **
-# o*
-# """
-# When the user reveals the cell "1-1"
-# Then the cell "1-1" should show a bomb
-# And the cell "1-2" should show a bomb
-# And the cell "2-2" should show a bomb
+Scenario: reveal all the bombs that are in the board when the user loses the game 
+Given the user loads the following mockData: "**-o*"
+When the user reveals the cell "1-1"
+Then the cell "1-1" should show a bomb
+And the cell "1-2" should show a bomb
+And the cell "2-2" should show a bomb
 
 
 # # ---------------------------------------WIN GAME-------------------------------------------

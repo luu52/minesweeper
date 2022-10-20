@@ -1,9 +1,9 @@
 let board = [];
 let rows = 8;
 let columns = 8;
-let minesLocation = [];                                                                             // for example = "2-2", "3-4", "2-1"
-let cellsClicked = 0;                                                                               //everytime we click on a cell this goes up
-let gameOver = false;                                                                               //disable buttons when game is over
+let minesLocation = []; // for example = "2-2", "3-4", "2-1"
+let cellsClicked = 0; //everytime we click on a cell this goes up
+let gameOver = false; //disable buttons when game is over
 let flag_counter = 10;
 let number_mines = 10;
 let interval;
@@ -12,12 +12,13 @@ let counterIsRunning = false;
 window.onload = function () {
   generateMockData();
   startGame();
+  resetGame();
 };
 
 function generateMockData() {
-  let url = window.location.search.split("?");                                                     //split--> generates an array and everything that is before the "?" is in position 1
+  let url = window.location.search.split("?"); //split--> generates an array and everything that is before the "?" is in position 1
   if (window.location.search.includes("?")) {
-    let urlWithHyphen = url[1].split("-");                                                         //we get the url previously saved and then we get the first position of the array and we split it with -
+    let urlWithHyphen = url[1].split("-"); //we get the url previously saved and then we get the first position of the array and we split it with -
     columns = urlWithHyphen[0].length;
     rows = urlWithHyphen.length;
     generateMockDataBoard(columns, rows);
@@ -25,7 +26,8 @@ function generateMockData() {
   console.log(board);
 }
 
-function generateMockDataBoard(numRows, numCols) {                                                  //dynamic mockData
+function generateMockDataBoard(numRows, numCols) {
+  //dynamic mockData
   let boardWidth = numRows * 50;
   let boardHeight = numCols * 50;
 
@@ -47,12 +49,11 @@ function placeMinesInMockData() {
 }
 
 function startGame() {
-  document.getElementById("flag-count").innerText = flag_counter;                                           //with this we are saying that the HTML flag-count id equals the flag_counter variable created in the js
-  document.getElementById("reset-game").addEventListener("click", resetGame);
+  document.getElementById("flag-count").innerText = flag_counter; //with this we are saying that the HTML flag-count id equals the flag_counter variable created in the js
 
   if (window.location.search.includes("?")) {
     placeMinesInMockData();
-  } else{
+  } else {
     placeRandomMines();
   }
 
@@ -61,9 +62,9 @@ function startGame() {
     let row = [];
     for (let c = 0; c < columns; c++) {
       let cell = document.createElement("div");
-      cell.id = r.toString() + "-" + c.toString();                                                          //ad id's to the divs
-      cell.addEventListener("click", (event) => {clickcell(event.target)});                                                            //make the cells clickeable
-      cell.addEventListener("contextmenu", (event) => {event.preventDefault(); tagCell(event.target)}); 
+      cell.id = r.toString() + "-" + c.toString(); //ad id's to the divs
+      cell.addEventListener("click", (event) => {clickcell(event.target);}); //make the cells clickeable
+      cell.addEventListener("contextmenu", (event) => {event.preventDefault();tagCell(event.target);});
       document.getElementById("board").append(cell);
       cell.setAttribute("data-testid", r + "-" + c);
       row.push(cell);
@@ -87,20 +88,22 @@ function placeRandomMines() {
   console.log(minesLocation);
 }
 
-function tagCell(cell){
+function tagCell(cell) {
   console.log(cell);
-    if (cell.innerText == "") {                                                                             //if the clicked cell has nothing, and we click it, we set a flag
-      cell.innerText = "🚩";
-      flag_counter--;
-    } else if (cell.innerText == "🚩") {                                                                    //if the clicked cell has a flag, and we click it, we set it to nothing
-      cell.innerText = "❓";
-      flag_counter++;
-    } else if(cell.innerText == "❓"){
-      cell.innerText = "";
-    } else{
-      cell.innerText = "";
-    }
-    document.getElementById("flag-count").innerText = flag_counter;
+  if (cell.innerText == "") {
+    //if the clicked cell has nothing, and we click it, we set a flag
+    cell.innerText = "🚩";
+    flag_counter--;
+  } else if (cell.innerText == "🚩") {
+    //if the clicked cell has a flag, and we click it, we set it to nothing
+    cell.innerText = "❓";
+    flag_counter++;
+  } else if (cell.innerText == "❓") {
+    cell.innerText = "";
+  } else {
+    cell.innerText = "";
+  }
+  document.getElementById("flag-count").innerText = flag_counter;
 }
 
 function clickcell(cell) {
@@ -112,13 +115,14 @@ function clickcell(cell) {
   if (gameOver || cell.classList.contains("cell-clicked")) {
     return;
   }
+
   if (minesLocation.includes(cell.id)) {
     gameOver = true;
     revealAllMinesWhenOneIsClicked();
     return;
   }
 
-  let coords = cell.id.split("-");                                                                          // "0-0" -> ["0", "0"]
+  let coords = cell.id.split("-"); // "0-0" -> ["0", "0"]
   let r = parseInt(coords[0]);
   let c = parseInt(coords[1]);
   checkMine(r, c);
@@ -133,13 +137,12 @@ function revealAllMinesWhenOneIsClicked() {
         cell.classList.add("minedCellBackgroundColor");
       }
     }
-
   }
   clearInterval(interval);
 }
 
 function checkMine(r, c) {
-  if (r < 0 || r >= rows || c < 0 || c >= columns) {    //check that everything is inside the board
+  if (r < 0 || r >= rows || c < 0 || c >= columns) { //check that everything is inside the board
     return;
   }
   if (board[r][c].classList.contains("cell-clicked")) {
@@ -200,16 +203,42 @@ function checkcell(r, c) {
   return 0;
 }
 
-function timeCounter(){
+function timeCounter() {
   let seconds = 0;
-  interval = window.setInterval(function(){
+  interval = window.setInterval(function () {
     if (counterIsRunning) {
       document.getElementById("time-count").innerHTML = seconds.toString();
-      seconds++
+      seconds++;
     }
-  },1000)
+  }, 1000);
 }
 
-function resetGame(){
-  
+function reset_minesweeper() {
+  seconds = 0;
+  document.getElementById("time-count").innerHTML = seconds;
+  gameOver = false;
+  counterIsRunning = false;
+  flag_counter = 10;
+  number_mines = 10;
+  clearInterval(interval);
+  minesLocation = [];
+  board = [];
+  cellsClicked = 0;
+  deleteBoard();
+  generateMockData();
+  startGame();
+}
+
+function deleteBoard() {
+  for (let i = 0; i < rows; i++) {
+    for (j = 0; j < columns; j++) {
+      document.getElementById(i + "-" + j).remove();
+    }
+  }
+}
+
+function resetGame() {
+  document.getElementById("reset-game").addEventListener("click", (event) => { {
+      reset_minesweeper(event.target);
+  }});
 }
