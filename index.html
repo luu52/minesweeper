@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Minesweeper</title>
-        <link rel="stylesheet" href="styles.css">
-        <script src="main.js"></script>
-    </head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minesweeper</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="main.js"></script>
+  </head>
 
-    <body>
-        <h1>Minesweeper</h1>
-        <h3>Number of flags: <span id="flag-count"></span></h3>
-        <h3>Time counter: <span id="time-count" data-testid="count"></span></h3>
-        <div id="board"></div>
-        <br>
-        <button id="reset-game"> RESET GAME </button>
-    </body>
+  <body>
+    <h1>Minesweeper</h1>
+    <h3>Number of flags: <span id="flag-count" data-testid="flag-count"></span></h3>
+    <h3>Time counter: <span id="time-count" data-testid="count"></span></h3>
+    <div id="board"></div>
+    <br />
+    <button id="reset-game" data-testid="resetGame">RESET GAME</button>
+    <div id="game-over" data-testid="gameOverMessage"></div>
+    <div id="win-message" data-testid="youWinMessage"></div>
+  </body>
 </html>

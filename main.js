@@ -4,10 +4,12 @@ let columns = 8;
 let minesLocation = []; // for example = "2-2", "3-4", "2-1"
 let cellsClicked = 0; //everytime we click on a cell this goes up
 let gameOver = false; //disable buttons when game is over
-let flag_counter = 10;
+let flag_counter = 0;
 let number_mines = 10;
 let interval;
 let counterIsRunning = false;
+let gameOverText = "GAME OVER";
+let youWonText = "YOU WON";
 
 window.onload = function () {
   generateMockData();
@@ -42,6 +44,7 @@ function placeMinesInMockData() {
     for (let c = 0; c < columns; c++) {
       if (MockData[r].charAt(c) == "*") {
         minesLocation.push(r.toString() + "-" + c.toString());
+        flag_counter++;
       }
     }
   }
@@ -49,13 +52,13 @@ function placeMinesInMockData() {
 }
 
 function startGame() {
-  document.getElementById("flag-count").innerText = flag_counter; //with this we are saying that the HTML flag-count id equals the flag_counter variable created in the js
-
   if (window.location.search.includes("?")) {
     placeMinesInMockData();
   } else {
     placeRandomMines();
   }
+
+  document.getElementById("flag-count").innerText = flag_counter; //with this we are saying that the HTML flag-count id equals the flag_counter variable created in the js
 
   //creation of default board
   for (let r = 0; r < rows; r++) {
@@ -74,15 +77,15 @@ function startGame() {
 }
 
 function placeRandomMines() {
-  let minesLeft = number_mines;
-  while (minesLeft > 0) {
+  flag_counter = number_mines;
+  while (number_mines > 0) {
     let r = Math.floor(Math.random() * rows);
     let c = Math.floor(Math.random() * columns);
     let id = r.toString() + "-" + c.toString();
 
     if (!minesLocation.includes(id)) {
       minesLocation.push(id);
-      minesLeft -= 1;
+      number_mines -= 1;
     }
   }
   console.log(minesLocation);
@@ -90,12 +93,10 @@ function placeRandomMines() {
 
 function tagCell(cell) {
   console.log(cell);
-  if (cell.innerText == "") {
-    //if the clicked cell has nothing, and we click it, we set a flag
+  if (cell.innerText == "") {//if the clicked cell has nothing, and we click it, we set a flag
     cell.innerText = "🚩";
     flag_counter--;
-  } else if (cell.innerText == "🚩") {
-    //if the clicked cell has a flag, and we click it, we set it to nothing
+  } else if (cell.innerText == "🚩") {//if the clicked cell has a flag, and we click it, we set it to nothing
     cell.innerText = "❓";
     flag_counter++;
   } else if (cell.innerText == "❓") {
@@ -139,6 +140,7 @@ function revealAllMinesWhenOneIsClicked() {
     }
   }
   clearInterval(interval);
+  document.getElementById("game-over").innerText = gameOverText;
 }
 
 function checkMine(r, c) {
@@ -151,6 +153,7 @@ function checkMine(r, c) {
 
   board[r][c].classList.add("cell-clicked");
   cellsClicked += 1;
+  checkIfGameIsWon();
 
   let minesFound = 0;
 
@@ -186,11 +189,6 @@ function checkMine(r, c) {
     checkMine(r + 1, c); //bottom
     checkMine(r + 1, c + 1); //bottom right
   }
-
-  if (cellsClicked == rows * columns - number_mines) {
-    document.getElementById("mines-count").innerText = "Cleared";
-    gameOver = true;
-  }
 }
 
 function checkcell(r, c) {
@@ -213,12 +211,23 @@ function timeCounter() {
   }, 1000);
 }
 
+function checkIfGameIsWon(){
+  if (((rows * columns) - minesLocation.length) == cellsClicked) {
+    document.getElementById("win-message").innerText = youWonText;
+    clearInterval(interval);
+    gameOver = true;
+  }
+}
+
 function reset_minesweeper() {
   seconds = 0;
   document.getElementById("time-count").innerHTML = seconds;
+  document.getElementById("game-over").innerText = "";
+  document.getElementById("win-message").innerText = "";
+
   gameOver = false;
   counterIsRunning = false;
-  flag_counter = 10;
+  flag_counter = 0;
   number_mines = 10;
   clearInterval(interval);
   minesLocation = [];

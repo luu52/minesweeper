@@ -1,8 +1,8 @@
 {
   "devDependencies": {
-    "@cucumber/cucumber": "^8.5.3",
+    "@cucumber/cucumber": "^8.7.0",
     "@playwright/test": "^1.25.2",
-    "playwright": "^1.25.2"
+    "playwright": "^1.27.1"
   },
   "scripts": {
     "test:e2e": "cucumber-js --require cucumber.conf.js --require tests/steps/**/*.steps.js --parallel 4"
