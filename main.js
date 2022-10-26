@@ -66,8 +66,13 @@ function startGame() {
     for (let c = 0; c < columns; c++) {
       let cell = document.createElement("div");
       cell.id = r.toString() + "-" + c.toString(); //ad id's to the divs
-      cell.addEventListener("click", (event) => {clickcell(event.target);}); //make the cells clickeable
-      cell.addEventListener("contextmenu", (event) => {event.preventDefault();tagCell(event.target);});
+      cell.addEventListener("click", (event) => {
+        clickcell(event.target);
+      }); //make the cells clickeable
+      cell.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+        tagCell(event.target);
+      });
       document.getElementById("board").append(cell);
       cell.setAttribute("data-testid", r + "-" + c);
       row.push(cell);
@@ -93,10 +98,12 @@ function placeRandomMines() {
 
 function tagCell(cell) {
   console.log(cell);
-  if (cell.innerText == "") {//if the clicked cell has nothing, and we click it, we set a flag
+  if (cell.innerText == "") {
+    //if the clicked cell has nothing, and we click it, we set a flag
     cell.innerText = "🚩";
     flag_counter--;
-  } else if (cell.innerText == "🚩") {//if the clicked cell has a flag, and we click it, we set it to nothing
+  } else if (cell.innerText == "🚩") {
+    //if the clicked cell has a flag, and we click it, we set it to nothing
     cell.innerText = "❓";
     flag_counter++;
   } else if (cell.innerText == "❓") {
@@ -127,6 +134,8 @@ function clickcell(cell) {
   let r = parseInt(coords[0]);
   let c = parseInt(coords[1]);
   checkMine(r, c);
+
+  cell.classList.add("disabledCells");
 }
 
 function revealAllMinesWhenOneIsClicked() {
@@ -141,16 +150,18 @@ function revealAllMinesWhenOneIsClicked() {
   }
   clearInterval(interval);
   document.getElementById("game-over").innerText = gameOverText;
+  disableAllCells();
 }
 
 function checkMine(r, c) {
-  if (r < 0 || r >= rows || c < 0 || c >= columns) { //check that everything is inside the board
+  if (r < 0 || r >= rows || c < 0 || c >= columns) {
+    //check that everything is inside the board
     return;
   }
   if (board[r][c].classList.contains("cell-clicked")) {
     return;
   }
-
+  board[r][c].classList.add("disabledCells");
   board[r][c].classList.add("cell-clicked");
   cellsClicked += 1;
   checkIfGameIsWon();
@@ -211,11 +222,20 @@ function timeCounter() {
   }, 1000);
 }
 
-function checkIfGameIsWon(){
-  if (((rows * columns) - minesLocation.length) == cellsClicked) {
+function checkIfGameIsWon() {
+  if (rows * columns - minesLocation.length == cellsClicked) {
     document.getElementById("win-message").innerText = youWonText;
+    disableAllCells();
     clearInterval(interval);
     gameOver = true;
+  }
+}
+
+function disableAllCells() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      document.getElementById(r + "-" + c).classList.add("disabledCells");
+    }
   }
 }
 
@@ -247,7 +267,9 @@ function deleteBoard() {
 }
 
 function resetGame() {
-  document.getElementById("reset-game").addEventListener("click", (event) => { {
+  document.getElementById("reset-game").addEventListener("click", (event) => {
+    {
       reset_minesweeper(event.target);
-  }});
+    }
+  });
 }

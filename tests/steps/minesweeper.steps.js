@@ -2,18 +2,21 @@
 const { Given, When, Then } = require("@cucumber/cucumber");
 const { expect } = require("@playwright/test");
 
-const url = "http://127.0.0.1:5500/index.html";
+const url = "http://127.0.0.1:5501/index.html";
 
 const flagSymbol = "\u{1F6A9}";
 const uncertainSymbol = "\u{2753}";
+
+let rows;
+let columns;
 
 async function buttonClick(buttonId) {
   await page.click(`[data-testid = "${buttonId}"]`, { force: true });
 }
 
 async function checkMockData(String){
-  let rows = String.split("-").length;
-  let columns = String.split("-")[0].length;
+  rows = String.split("-").length;
+  columns = String.split("-")[0].length;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       let checkCellContent = await page.locator('data-testid=' + r + "-" + c).innerText();
@@ -46,7 +49,7 @@ Then('the counter should be set to {string}', async (string) => {
 });
 
 Given("the user loads the following mockData: {string}", async function (string) {
-  let mockDataUrl = "http://127.0.0.1:5500/index.html?" + string;
+  let mockDataUrl = "http://127.0.0.1:5501/index.html?" + string;
   await page.goto(mockDataUrl);
 });
 
@@ -129,20 +132,33 @@ When('the user presses the button reset', async function () {
 });
 
 Then('the game resets', async function () {
-  let rows = 8;
-  let columns = 8;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      let checkCellContent = await page.locator('data-testid="' + r + "-" + c + '"');
+      let checkCellContent = await page.locator('data-testid=' + r + "-" + c);
       let className = await checkCellContent.getAttribute("class");
-      expect(className).toBe("");
-    }}
+      expect(className).toBe(null);
+    }
+  }
       let checkTimeCounter = await page.locator(`[data-testid="count"]`);
       let timeCount = await checkTimeCounter.innerText();
-      expect(timeCount).toBe("");
+      expect(timeCount).toBe("0");
 
       let Flagcounter = await page.locator(`[data-testid="flag-count"]`);
       let flagCount = await Flagcounter.innerText();
       expect(flagCount).toBe("10");
 });
 
+Then('all the cells should be disabled', async function () {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      let checkCellContent = await page.locator('data-testid=' + r + "-" + c).getAttribute("class");
+      expect(checkCellContent).toBe("disabledCells");
+    }
+  }
+});
+
+Then('the cell {string} should be disabled', async function (string) {
+      let checkCellContent = await page.locator('data-testid=' + string);
+      let makeSplit = await checkCellContent.getAttribute("class");
+      expect(makeSplit.includes("disabledCells")).toBeTruthy();
+});
