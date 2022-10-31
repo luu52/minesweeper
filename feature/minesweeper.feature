@@ -129,7 +129,9 @@ Then then the counter should set to "3"
 Scenario: disable all the board once the user loses the game
 Given the user loads the following mockData: "oo-o*"
 When the user unleash the cell "1-1"
-Then all the cells should be disabled
+Then the cell "1-0" should be disabled
+And the cell "0-0" should be disabled
+And the cell "0-1" should be disabled
 
 Scenario: When the user reveals all the empty cells all the board gets disabled
 Given the user loads the following mockData: "**-*o"

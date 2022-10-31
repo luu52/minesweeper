@@ -148,15 +148,6 @@ Then('the game resets', async function () {
       expect(flagCount).toBe("10");
 });
 
-Then('all the cells should be disabled', async function () {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      let checkCellContent = await page.locator('data-testid=' + r + "-" + c).getAttribute("class");
-      expect(checkCellContent).toBe("disabledCells");
-    }
-  }
-});
-
 Then('the cell {string} should be disabled', async function (string) {
       let checkCellContent = await page.locator('data-testid=' + string);
       let makeSplit = await checkCellContent.getAttribute("class");

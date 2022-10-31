@@ -28,8 +28,7 @@ function generateMockData() {
   console.log(board);
 }
 
-function generateMockDataBoard(numRows, numCols) {
-  //dynamic mockData
+function generateMockDataBoard(numRows, numCols) { //dynamic mockData
   let boardWidth = numRows * 50;
   let boardHeight = numCols * 50;
 
@@ -154,10 +153,6 @@ function revealAllMinesWhenOneIsClicked() {
 }
 
 function checkMine(r, c) {
-  if (r < 0 || r >= rows || c < 0 || c >= columns) {
-    //check that everything is inside the board
-    return;
-  }
   if (board[r][c].classList.contains("cell-clicked")) {
     return;
   }
@@ -185,27 +180,10 @@ function checkMine(r, c) {
   if (minesFound > 0) {
     board[r][c].innerText = minesFound;
     board[r][c].classList.add("x" + minesFound.toString()); //depending on the mines found, it gets a different class x1,x2,x3...
-  } else {
-    //top 3
-    checkMine(r - 1, c - 1); //top left
-    checkMine(r - 1, c); //top
-    checkMine(r - 1, c + 1); //top right
-
-    //left and right
-    checkMine(r, c - 1); //left
-    checkMine(r, c + 1); //right
-
-    //bottom 3
-    checkMine(r + 1, c - 1); //bottom left
-    checkMine(r + 1, c); //bottom
-    checkMine(r + 1, c + 1); //bottom right
   }
 }
 
 function checkcell(r, c) {
-  if (r < 0 || r >= rows || c < 0 || c >= columns) {
-    return 0;
-  }
   if (minesLocation.includes(r.toString() + "-" + c.toString())) {
     return 1;
   }
